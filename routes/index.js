@@ -87,6 +87,7 @@ router.post('/tweets', function(req, res, next){
         db.query(newTweetWithID, [content, newUserID], function(newTweetWithNewIDErr, newTweetWithNewIDResults) {
           if (newTweetWithNewIDErr) next(newTweetWithNewIDErr);
           console.log('Nailed It. We the best. Who? We');
+          res.redirect('/');
         })
       });
     }
@@ -97,11 +98,10 @@ router.post('/tweets', function(req, res, next){
       db.query(newTweetWithID, [content, existingUserID], function(newTweetWithIDErr, newTweetWithIDResults) {
         if (newTweetWithIDErr) next(newTweetWithIDErr);
           console.log('Still the best');
+          res.redirect('/');
       });
     }
-
-  });
-  res.redirect('/');
+  }); 
 });
 
 // Search Route
