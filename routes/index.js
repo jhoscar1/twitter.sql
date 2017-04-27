@@ -108,24 +108,23 @@ router.post('/tweets', function(req, res, next){
 router.post('/search', function(req, res, next) {
   // console.log(req.body);
   
-  
   var searchKey = req.body.search;
 
   // res.redirect(`/search?search=${searchKey}`);
-  var userSearch = `SELECT * from tweets INNER JOIN users ON tweets.user_id = users.id WHERE users.name LIKE '%${searchKey}%'`;
+  var userSearch = "SELECT * from tweets INNER JOIN users ON tweets.user_id = users.id WHERE users.name LIKE '%' || $1 || '%'";
 
-  var contentSearch = `Select * from tweets inner join users on users.id=tweets.user_id where tweets.content LIKE '%${searchKey}%'`;
+  var contentSearch = "Select * from tweets inner join users on users.id=tweets.user_id where tweets.content LIKE '%' || $1 || '%'";
 
   var allTweets = [];
 
-  db.query(userSearch, function(err, results) {
+  db.query(userSearch, [searchKey], function(err, results) {
     if (err) console.log(err);
     if (results.rows.length) {
       results.rows.forEach(function(tweet) {
         allTweets.push(tweet);
       });
     }
-    db.query(contentSearch, function(contentErr, contentResults) {
+    db.query(contentSearch, [searchKey], function(contentErr, contentResults) {
       if (contentErr) next(err);
       if (contentResults.rows.length) {
         contentResults.rows.forEach(function(tweet) {
